@@ -1,15 +1,23 @@
 class Solution:
     def maxPalindromes(self, s: str, k: int) -> int:
+        def check(l, r):
+            while l < r:
+                if s[l] != s[r]:
+                    return False
+                l += 1
+                r -= 1
+            return True
         n = len(s)
-        pal = [[False] * n for _ in range(n)]
-        for i in range(n - 1, -1, -1):
-            for j in range(i, n):
-                if s[i] == s[j] and (j - i < 2 or pal[i + 1][j - 1]):
-                    pal[i][j] = True
-        dp = [0] * (n + 1)
-        for i in range(1, n + 1):
-            dp[i] = dp[i - 1]
-            for j in range(i - k + 1):
-                if i - j >= k and pal[j][i - 1]:
-                    dp[i] = max(dp[i], dp[j] + 1)
-        return dp[n]
+        ans = 0
+        start = 0
+        for r in range(k - 1, n):
+            l = r - k + 1
+            if l >= start and check(l, r):
+                ans += 1
+                start = r + 1
+                continue
+            l = r - k
+            if l >= start and check(l, r):
+                ans += 1
+                start = r + 1
+        return ans
